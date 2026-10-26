@@ -202,6 +202,7 @@ button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 .seg{display:flex}.seg button{border-radius:0}.seg button:first-child{border-radius:10px 0 0 10px}.seg button:last-child{border-radius:0 10px 10px 0}
 main{padding:10px 12px 40px;max-width:560px;margin:0 auto}
 #q{flex:1;min-width:0;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.btn{display:inline-block;margin-top:8px;padding:6px 16px;border-radius:10px;background:var(--acc);color:#fff;text-decoration:none;font-weight:600}
 .chip{font-size:13px;padding:3px 10px;border-radius:14px}
 .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .dow{text-align:center;font-size:12px;color:var(--mut)}
@@ -271,7 +272,7 @@ function card(e){
    +'<div class="mut">'+esc(e.branch)+(e.room?' · '+esc(e.room):'')+'</div>'+(aud?'<div class="mut">Ages: '+esc(aud)+'</div>':'')
    +'<div class="mut"><a href="'+maps+'">'+esc(e.address)+'</a></div>'
    +(e.closed?'<div class="mut">⚠ Dennis Branch has been closed for renovations—confirm before going.</div>':'')
-   +reg+(e.url?' <a class="mut" href="'+esc(e.url)+'">Details ›</a>':'')+'</div>';
+   +reg+(e.url?(e.reg===true?'<div><a class="btn" href="'+esc(e.url)+'">Register ›</a></div>':' <a class="mut" href="'+esc(e.url)+'">'+(e.reg===false?'Details':'Details / register')+' ›</a>'):'')+'</div>';
 }
 function dayLabel(s){const d=new Date(s+'T12:00');return d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}
 function render(){

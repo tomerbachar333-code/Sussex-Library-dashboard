@@ -196,7 +196,7 @@ PAGE = r"""<!doctype html>
 @media(prefers-color-scheme:dark){:root{--bg:#161715;--card:#222421;--ink:#ecece6;--mut:#a2a39b;--acc:#6fc2a8;--line:#363933;--warn:#e0a24a;--ok:#74c993;--sel:#27403a}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}html{-webkit-text-size-adjust:100%;text-size-adjust:100%;color-scheme:light dark}
 body{background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,system-ui,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-header{position:sticky;top:0;background:var(--bg);padding:10px 12px 8px;border-bottom:1px solid var(--line);z-index:5}
+header{background:var(--bg);padding:10px 12px 8px;border-bottom:1px solid var(--line);max-width:560px;margin:0 auto}
 h1{font-size:18px;margin:0 0 8px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .nav{justify-content:space-between;margin-bottom:8px}
@@ -227,14 +227,13 @@ a{color:var(--acc)}
 <header>
 <h1>Little Ones at the Library</h1>
 <div class="row nav"><button id="prev">‹</button><b id="mlabel"></b><button id="next">›</button></div>
-<div class="row">
-<div class="seg"><button id="vm" class="on">Month</button><button id="vl">List</button></div>
-<div class="seg"><button id="ak" class="on">Ages 0-3</button><button id="aa">All ages</button></div>
-<select id="br"><option value="">All branches</option></select>
-<div class="seg"><button id="r0" class="on">Any</button><button id="r1">Drop-in</button><button id="r2">Registration</button></div>
-</div>
+<div class="row"><div class="seg"><button id="vm" class="on">Month</button><button id="vl">List</button></div><button id="ft" aria-expanded="false">Filters<span id="fn"></span> ▾</button></div>
 <div class="row" style="margin-top:8px"><input id="q" type="text" enterkeyhint="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Search events: Tiny Tots, music…"><button id="qc" hidden>✕</button></div>
-<div class="row" style="margin-top:6px" id="chips"></div>
+<div id="fp" hidden>
+<div class="row" style="margin-top:8px"><div class="seg"><button id="ak" class="on">Ages 0-3</button><button id="aa">All ages</button></div><select id="br"><option value="">All branches</option></select></div>
+<div class="row" style="margin-top:8px"><div class="seg"><button id="r0" class="on">Any</button><button id="r1">Drop-in</button><button id="r2">Registration</button></div></div>
+<div class="row" style="margin-top:8px" id="chips"></div>
+</div>
 </header>
 <main><div id="msg"></div><div id="cal"></div><div id="list"></div></main>
 <script>
@@ -281,7 +280,7 @@ function card(e){
    +reg+(e.url?(e.reg===true?'<div><a class="btn" href="'+esc(e.url)+'">Register ›</a></div>':' <a class="mut" href="'+esc(e.url)+'">'+(e.reg===false?'Details':'Details / register')+' ›</a>'):'')+'</div>';
 }
 function dayLabel(s){const p=s.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);return d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}
-function render(){
+function render(){updFn();
   const ev=filt(),by={};ev.forEach(e=>(by[e.date]=by[e.date]||[]).push(e));
   $('cal').innerHTML='';$('list').innerHTML='';
   if(S.view==='month'&&!S.q){
@@ -310,6 +309,8 @@ $('ak').onclick=()=>{S.kids=true;setOn('ak','aa',true);render()};
 $('aa').onclick=()=>{S.kids=false;setOn('ak','aa',false);render()};
 $('br').onchange=e=>{S.branch=e.target.value;render()};
 ['r0','r1','r2'].forEach((id,i)=>$(id).onclick=()=>{S.regf=['','drop','req'][i];['r0','r1','r2'].forEach((x,j)=>$(x).classList.toggle('on',j===i));render()});
+function updFn(){const n=(S.kids?0:1)+(S.branch?1:0)+(S.regf?1:0);$('fn').textContent=n?' ('+n+')':''}
+$('ft').onclick=()=>{const o=$('fp').hidden;$('fp').hidden=!o;$('ft').setAttribute('aria-expanded',o);$('ft').classList.toggle('on',o)};
 const CH=['Tiny Tots','Music','Storytime','Toddler','Baby'];
 CH.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c;b.onclick=()=>{$('q').value=c;applyQ()};$('chips').appendChild(b)});
 let qt;function applyQ(){S.q=$('q').value.trim();$('qc').hidden=!S.q;load()}

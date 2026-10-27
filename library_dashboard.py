@@ -186,6 +186,7 @@ PAGE = r"""<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
 <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#161715" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-title" content="Library Little Ones">
@@ -212,7 +213,6 @@ main{padding:10px 12px 40px;max-width:560px;margin:0 auto}
 .dow{text-align:center;font-size:12px;color:var(--mut)}
 .day{min-height:42px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:2px 2px 3px;font-size:13px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;cursor:pointer}
 .day.empty{background:none;border:none}.day.sel{background:var(--sel);border-color:var(--acc)}
-.day.today{border:2px solid var(--acc);background:var(--sel)}
 .day.today span:first-child{background:var(--acc);color:#fff;border-radius:50%;width:22px;height:22px;line-height:22px;text-align:center;font-weight:700}
 @media(prefers-color-scheme:dark){.day.today span:first-child,.cnt,button.on,.btn{color:#10201b}}
 .cnt{font-size:10px;line-height:14px;background:var(--acc);color:#fff;border-radius:8px;padding:0 5px;min-width:16px;text-align:center}

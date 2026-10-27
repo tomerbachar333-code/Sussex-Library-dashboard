@@ -41,6 +41,9 @@ cache = {}
 
 
 def branch_of(ev):
+    blob = (str(ev.get("title") or "") + " " + str(ev.get("location") or "")).lower()
+    if any(w in blob for w in ("virtual", "online", "zoom")):
+        return "Online (virtual)"
     for field in ("campus", "location", "title"):
         t = " " + str(ev.get(field) or "").lower()
         for name, words in KEYS:
@@ -231,7 +234,7 @@ a{color:var(--acc)}
 <div class="row" style="margin-top:8px"><input id="q" type="text" enterkeyhint="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Search events: Tiny Tots, music…"><button id="qc" hidden>✕</button></div>
 <div id="fp" hidden>
 <div class="row" style="margin-top:8px"><div class="seg"><button id="ak" class="on">Ages 0-3</button><button id="aa">All ages</button></div><select id="br"><option value="">All branches</option></select></div>
-<div class="row" style="margin-top:8px"><div class="seg"><button id="r0" class="on">Any</button><button id="r1">Drop-in</button><button id="r2">Registration</button></div></div>
+<div class="row" style="margin-top:8px"><div class="seg"><button id="r0" class="on">Any</button><button id="r1">No registration</button><button id="r2">Registration</button></div></div>
 <div class="row" style="margin-top:8px" id="chips"></div>
 </div>
 </header>
@@ -270,14 +273,14 @@ function filt(){
   return S.data.filter(e=>(!S.kids||e.kids)&&(!S.branch||e.branch===S.branch)&&(S.regf==='req'?e.reg===true:S.regf==='drop'?e.reg!==true:true)&&(!S.q||(e.date>=t&&toks.every(w=>(e.title+' '+e.room).toLowerCase().includes(w)))));
 }
 function card(e){
-  const reg=e.reg===true?'<span class="tag t-reg">Registration required</span>':e.reg===false?'<span class="tag t-ok">Drop-in</span>':'<span class="tag t-unk">Check registration</span>';
+  const reg=e.reg===true?'<span class="tag t-reg">Registration required</span>':'';
   const maps='https://maps.apple.com/?q='+encodeURIComponent(e.branch+' '+e.address);
   const aud=(e.audience||[]).map(x=>x.split('|')[0].trim()).join(' · ');
   return '<div class="card"><h3>'+esc(e.title)+'</h3><div>'+esc(e.time)+'</div>'
    +'<div class="mut">'+esc(e.branch)+(e.room?' · '+esc(e.room):'')+'</div>'+(aud?'<div class="mut">Ages: '+esc(aud)+'</div>':'')
-   +'<div class="mut"><a href="'+maps+'">'+esc(e.address)+'</a></div>'
+   +(e.address?'<div class="mut"><a href="'+maps+'">'+esc(e.address)+'</a></div>':'')
    +(e.closed?'<div class="mut">⚠ Dennis Branch has been closed for renovations—confirm before going.</div>':'')
-   +reg+(e.url?(e.reg===true?'<div><a class="btn" href="'+esc(e.url)+'">Register ›</a></div>':' <a class="mut" href="'+esc(e.url)+'">'+(e.reg===false?'Details':'Details / register')+' ›</a>'):'')+'</div>';
+   +reg+(e.url?(e.reg===true?'<div><a class="btn" href="'+esc(e.url)+'">Register ›</a></div>':' <a class="mut" href="'+esc(e.url)+'">Details ›</a>'):'')+'</div>';
 }
 function dayLabel(s){const p=s.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);return d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}
 function render(){updFn();

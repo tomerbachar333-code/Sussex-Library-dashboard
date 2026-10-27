@@ -185,30 +185,36 @@ PAGE = r"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161715" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-title" content="Library Little Ones">
 <title>Little Ones at the Library</title>
 <style>
 :root{--bg:#f6f4ef;--card:#fff;--ink:#222;--mut:#6b6b66;--acc:#2f6f5e;--line:#e4e0d6;--warn:#b26a00;--ok:#2f7d4f;--sel:#dff0e9}
 @media(prefers-color-scheme:dark){:root{--bg:#161715;--card:#222421;--ink:#ecece6;--mut:#a2a39b;--acc:#6fc2a8;--line:#363933;--warn:#e0a24a;--ok:#74c993;--sel:#27403a}}
-*{box-sizing:border-box}html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,system-ui,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}html{-webkit-text-size-adjust:100%;text-size-adjust:100%;color-scheme:light dark}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,system-ui,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 header{position:sticky;top:0;background:var(--bg);padding:10px 12px 8px;border-bottom:1px solid var(--line);z-index:5}
 h1{font-size:18px;margin:0 0 8px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .nav{justify-content:space-between;margin-bottom:8px}
 .nav b{font-size:17px}
-button,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 12px}
+button,select,#q{-webkit-appearance:none;appearance:none;font:inherit;line-height:1.2;color:var(--ink);background-color:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-height:40px;touch-action:manipulation}
+select{padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:10px 6px}
 button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 .seg{display:flex}.seg button{border-radius:0}.seg button:first-child{border-radius:10px 0 0 10px}.seg button:last-child{border-radius:0 10px 10px 0}
 main{padding:10px 12px 40px;max-width:560px;margin:0 auto}
 #q{flex:1;min-width:0;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
 .btn{display:inline-block;margin-top:8px;padding:6px 16px;border-radius:10px;background:var(--acc);color:#fff;text-decoration:none;font-weight:600}
-.chip{font-size:13px;padding:3px 10px;border-radius:14px}
-.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.chip{font-size:13px;padding:4px 12px;border-radius:16px;min-height:0}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
 .dow{text-align:center;font-size:12px;color:var(--mut)}
 .day{min-height:42px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:2px 2px 3px;font-size:13px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;cursor:pointer}
 .day.empty{background:none;border:none}.day.sel{background:var(--sel);border-color:var(--acc)}
-.day.today span{color:var(--acc);font-weight:700}
+.day.today{border:2px solid var(--acc);background:var(--sel)}
+.day.today span:first-child{background:var(--acc);color:#fff;border-radius:50%;width:22px;height:22px;line-height:22px;text-align:center;font-weight:700}
+@media(prefers-color-scheme:dark){.day.today span:first-child,.cnt,button.on,.btn{color:#10201b}}
 .cnt{font-size:10px;line-height:14px;background:var(--acc);color:#fff;border-radius:8px;padding:0 5px;min-width:16px;text-align:center}
 .dh{margin:16px 0 6px;font-weight:700}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
@@ -227,7 +233,7 @@ a{color:var(--acc)}
 <select id="br"><option value="">All branches</option></select>
 <div class="seg"><button id="r0" class="on">Any</button><button id="r1">Drop-in</button><button id="r2">Registration</button></div>
 </div>
-<div class="row" style="margin-top:8px"><input id="q" type="search" placeholder="Search events: Tiny Tots, music…"><button id="qc" hidden>✕</button></div>
+<div class="row" style="margin-top:8px"><input id="q" type="text" enterkeyhint="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Search events: Tiny Tots, music…"><button id="qc" hidden>✕</button></div>
 <div class="row" style="margin-top:6px" id="chips"></div>
 </header>
 <main><div id="msg"></div><div id="cal"></div><div id="list"></div></main>
@@ -274,7 +280,7 @@ function card(e){
    +(e.closed?'<div class="mut">⚠ Dennis Branch has been closed for renovations—confirm before going.</div>':'')
    +reg+(e.url?(e.reg===true?'<div><a class="btn" href="'+esc(e.url)+'">Register ›</a></div>':' <a class="mut" href="'+esc(e.url)+'">'+(e.reg===false?'Details':'Details / register')+' ›</a>'):'')+'</div>';
 }
-function dayLabel(s){const d=new Date(s+'T12:00');return d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}
+function dayLabel(s){const p=s.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);return d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}
 function render(){
   const ev=filt(),by={};ev.forEach(e=>(by[e.date]=by[e.date]||[]).push(e));
   $('cal').innerHTML='';$('list').innerHTML='';
